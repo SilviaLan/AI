@@ -59,6 +59,41 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
+        FlagMin = float('inf')
+        legalActions = gameState.getLegalActions(self.index)
+        result = Directions.STOP
+        choices = []
+        eVal = []
+
+        for action in legalActions:
+            temp = self.max_method(gameState,1,self.index,self.index)
+            if action is not Directions.STOP:
+                eVal.append(temp)
+                choices.append(action)
+        score = min(eVal)
+        best = [index for index in range(len(eVal)) if eVal[index] == score]
+        chosenIndex = random.choice(best)
+        return choices[chosenIndex]
+
+    def max_method(self,state,depth,agent,nowAgent):
+        if depth>=self.depth and depth != 1:
+            return self.evaluationFunction(state)
+        Flag = float('-inf')
+        legalActions = state.getLegalActions(nowAgent)
+        for action in legalActions:
+            Flag = max(Flag,self.min_method(state.generateSuccessor(nowAgent,action)),depth,agent,0)
+        return Flag
+
+    def min_method(self,state,depth,agent,nowAgent):
+        if depth>=self.depth and depth != 1:
+            return self.evaluationFunction(state)
+        Flag = float('inf')
+        legalActions = state.getLegalActions(nowAgent)
+        for action in legalActions:
+            Flag = min(Flag,self.max_method(state.generateSuccessor(nowAgent,action)),depth+1,agent,agent)
+        return Flag
+
+
 
 
 
